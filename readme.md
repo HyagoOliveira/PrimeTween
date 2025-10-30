@@ -259,7 +259,7 @@ Tween.ShakeLocalPosition(Camera.main.transform, cameraShakeSettings);
 ```
 The neat thing about setting up animation properties in the Inspector is that you can any time switch to a custom **animation curve** without touching the code.
 
-<img width="100%" src="Documentation/inspector_integration.jpg">
+<img width="100%" src="Documentation~/inspector_integration.jpg">
 
 Now let's revisit the window example from the [Controlling tweens](#controlling-tweens) section and improve it by removing all magic variables from the code. Notice how the **`isOpened`** parameter is passed to the **`WithDirection(bool toEndValue)`** method. This helper method selects the target position based on the `isOpened` parameter. Nice and simple!
 
@@ -431,7 +431,7 @@ To debug tweens select the **PrimeTweenManager** object under the DontDestroyOnL
 
 If the tween's `target` is `UnityEngine.Object`, you can quickly show it in the Hierarchy by clicking on the `Unity Target` field. This is a good reason to supply the target even when it's optional, like in the case of `Tween.Delay()` and `Tween.Custom()`.
 
-<img src="Documentation/debug_tweens.jpg" width="80%">
+<img src="Documentation~/debug_tweens.jpg" width="80%">
 
 Also, the Inspector shows the '**Max alive tweens**' for the current session. Use this number to estimate the maximum number of tweens required for your game and pass it to the `PrimeTweenConfig.SetTweensCapacity(int capacity)` method at the launch of your game. This will ensure PrimeTween doesn't allocate any additional memory at runtime.
 
@@ -461,7 +461,7 @@ The Adapter is an **optional** feature designed to speed up PrimeTween's adoptio
 
 First, to enable the adapter, add the **`PRIME_TWEEN_DOTWEEN_ADAPTER`** define to the `ProjectSettings/Player/Script Compilation` and press Apply.
 
-<img src="Documentation/adapter_define.png" width="60%">
+<img src="Documentation~/adapter_define.png" width="60%">
 
 The migration process may vary from project to project. In many cases, simply replacing `using DG.Tweening;` with `using PrimeTween;` is enough to switch a script from DOTween to PrimeTween. See how easy was to migrate the [MotionDesignFES](https://github.com/KirillKuzyk/MotionDesignFES-PrimeTween/commit/628cb17d027e9648add45e0b2d9b431983a1bde6) project with dozens of complex animations.
 
