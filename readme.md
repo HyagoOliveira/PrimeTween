@@ -1,4 +1,3 @@
-
 PrimeTween
 ===
 
@@ -7,6 +6,12 @@ PrimeTween is a high-performance, **allocation-free** animation library for Unit
 [**Performance comparison with other tween libraries.**](https://github.com/KyryloKuzyk/PrimeTween/discussions/10)
 
 **[Asset Store](https://assetstore.unity.com/packages/slug/252960)** | **[Forum](https://discussions.unity.com/t/primetween-high-performance-animations-and-sequences/926420)** | **[FAQ](https://github.com/KyryloKuzyk/PrimeTween/discussions)** | **[YouTube](https://www.youtube.com/watch?v=MuMKwxOzc3M)**
+
+### Custon Fork
+
+This is a fork repository from the official [PrimeTween](https://github.com/KyryloKuzyk/PrimeTween). Some Tween Animation components were added into [Animations](/Runtime/Animations/) folder.
+
+Semantic Version follows X.Y.Z.W where X, Y and Z are reserved to the official Prime Tween package and Z is the custom updated number for this repo.
 
 Table of Contents
 ---
