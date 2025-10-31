@@ -17,6 +17,8 @@ namespace PrimeTween
         public override void PlayAnimation()
         {
             settings.endValue = System.Math.Max(settings.endValue, target.text.Length);
+
+            target.ForceMeshUpdate();
             Tween.TextMaxVisibleCharacters(target, settings);
         }
     }
