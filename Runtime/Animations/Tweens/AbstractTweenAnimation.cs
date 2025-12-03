@@ -10,5 +10,7 @@ namespace PrimeTween
     {
         [Tooltip("The Tween animation properties.")]
         public TweenSettings<T> settings;
+
+        private void OnEnable() => PlayAnimation();
     }
 }
