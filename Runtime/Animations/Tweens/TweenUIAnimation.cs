@@ -15,7 +15,7 @@ namespace PrimeTween
 
         private void Reset() => target = GetComponentInChildren<RectTransform>();
 
-        public override void PlayAnimation()
+        public override void Play()
         {
             switch (type)
             {

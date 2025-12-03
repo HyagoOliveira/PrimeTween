@@ -6,7 +6,7 @@ namespace PrimeTween
     {
         public bool useUnscaledTime;
 
-        private void Update() => PlayAnimation();
+        private void Update() => Play();
 
         protected float GetDeltaTime() => useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
     }

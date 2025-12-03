@@ -7,6 +7,6 @@ namespace PrimeTween
         /// <summary>
         /// Plays the Tween animation.
         /// </summary>
-        public abstract void PlayAnimation();
+        public abstract void Play();
     }
 }

@@ -16,7 +16,7 @@ namespace PrimeTween
 
         private void Reset() => target = GetComponentInChildren<TMP_Text>();
 
-        public override void PlayAnimation()
+        public override void Play()
         {
 #if TEXT_MESH_PRO_INSTALLED
             settings.endValue = System.Math.Max(settings.endValue, target.text.Length);

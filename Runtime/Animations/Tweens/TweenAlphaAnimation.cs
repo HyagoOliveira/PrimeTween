@@ -25,7 +25,7 @@ namespace PrimeTween
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
-        public override void PlayAnimation()
+        public override void Play()
         {
             if (canvasGroup) Tween.Alpha(canvasGroup, settings);
             if (spriteRenderer) Tween.Alpha(spriteRenderer, settings);
