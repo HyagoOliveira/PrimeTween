@@ -25,17 +25,18 @@ namespace PrimeTween
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
 
-        public override void Play()
+        protected override Tween GetTweenAnimation()
         {
-            if (canvasGroup) Tween.Alpha(canvasGroup, settings);
-            if (spriteRenderer) Tween.Alpha(spriteRenderer, settings);
+            if (canvasGroup) return Tween.Alpha(canvasGroup, settings);
+            if (spriteRenderer) return Tween.Alpha(spriteRenderer, settings);
 #if UNITY_UGUI_INSTALLED
-            if (graphic) Tween.Alpha(graphic, settings);
-            if (shadow) Tween.Alpha(shadow, settings);
+            if (graphic) return Tween.Alpha(graphic, settings);
+            if (shadow) return Tween.Alpha(shadow, settings);
 #endif
 #if UI_ELEMENTS_MODULE_INSTALLED
-            if (visualElement != null) Tween.Alpha(visualElement, settings);
+            if (visualElement != null) return Tween.Alpha(visualElement, settings);
 #endif
+            return default;
         }
     }
 }

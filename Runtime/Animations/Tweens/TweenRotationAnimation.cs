@@ -5,6 +5,6 @@ namespace PrimeTween
     [DisallowMultipleComponent]
     public sealed class TweenRotationAnimation : AbstractTweenAnimation<Quaternion>
     {
-        public override void Play() => Tween.Rotation(transform, settings);
+        protected override Tween GetTweenAnimation() => Tween.Rotation(transform, settings);
     }
 }

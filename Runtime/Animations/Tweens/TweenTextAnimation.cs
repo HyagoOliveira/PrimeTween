@@ -16,13 +16,15 @@ namespace PrimeTween
 
         private void Reset() => target = GetComponentInChildren<TMP_Text>();
 
-        public override void Play()
+        protected override Tween GetTweenAnimation()
         {
 #if TEXT_MESH_PRO_INSTALLED
             settings.endValue = System.Math.Max(settings.endValue, target.text.Length);
 
             target.ForceMeshUpdate();
-            Tween.TextMaxVisibleCharacters(target, settings);
+            return Tween.TextMaxVisibleCharacters(target, settings);
+#else
+            return default;
 #endif
         }
     }

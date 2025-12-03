@@ -8,9 +8,9 @@ namespace PrimeTween
         public Space relation = Space.Self;
         public Vector3 speed = Vector3.up * 15f;
 
-        public override void Play()
+        protected override void UpdateAnimation(float time)
         {
-            var velocity = speed * GetDeltaTime();
+            var velocity = speed * time;
             transform.Rotate(velocity, relation);
         }
     }

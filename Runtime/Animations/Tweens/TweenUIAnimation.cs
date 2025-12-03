@@ -15,20 +15,12 @@ namespace PrimeTween
 
         private void Reset() => target = GetComponentInChildren<RectTransform>();
 
-        public override void Play()
+        protected override Tween GetTweenAnimation() => type switch
         {
-            switch (type)
-            {
-                case AnchoredAnimationType.AnchoredPosition:
-                    Tween.UIAnchoredPosition(target, settings);
-                    break;
-                case AnchoredAnimationType.SizeDelta:
-                    Tween.UISizeDelta(target, settings);
-                    break;
-                default:
-                    break;
-            }
-        }
+            AnchoredAnimationType.AnchoredPosition => Tween.UIAnchoredPosition(target, settings),
+            AnchoredAnimationType.SizeDelta => Tween.UISizeDelta(target, settings),
+            _ => default
+        };
 
         public enum AnchoredAnimationType
         {
