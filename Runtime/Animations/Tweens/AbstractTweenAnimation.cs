@@ -20,10 +20,18 @@ namespace PrimeTween
 
         public override async Awaitable PlayAsync()
         {
-            Play();
+            var wasEnabled = enabled;
+            if (!enabled)
+            {
+                enabled = true;
+                await Awaitable.NextFrameAsync(); // waits OnEnable to be called
+            }
+            else Play();
+
             IsPaying = true;
             // Using this reference to create a non-allocation call
             await tweenAnimation.OnComplete(target: this, target => target.FinishPlay());
+            enabled = wasEnabled;
         }
 
         public override void Play() => tweenAnimation = GetTweenAnimation();

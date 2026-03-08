@@ -5,9 +5,7 @@ namespace PrimeTween
     [DisallowMultipleComponent]
     public sealed class AnimationSequence : AbstractAnimation
     {
-        private AbstractAnimation[] animations;
-
-        private void Awake() => animations = GetComponentsInChildren<AbstractAnimation>();
+        public AbstractAnimation[] animations;
 
         public override async Awaitable PlayAsync()
         {
