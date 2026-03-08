@@ -11,6 +11,12 @@ namespace PrimeTween
         public override void Play() => enabled = true;
         public override void Stop() => enabled = false;
 
+        public override async Awaitable PlayAsync()
+        {
+            await Awaitable.NextFrameAsync();
+            Play();
+        }
+
         protected abstract void UpdateAnimation(float time);
         private float GetDeltaTime() => useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
     }

@@ -11,10 +11,20 @@ namespace PrimeTween
         [Tooltip("The Tween animation properties."), ContextMenuItem("Create Loop", nameof(SetLoop))]
         public TweenSettings<T> settings;
 
+        public bool IsPaying { get; private set; }
+
         protected Tween tweenAnimation = default;
 
         private void OnEnable() => Play();
         private void OnDisable() => Stop();
+
+        public override async Awaitable PlayAsync()
+        {
+            Play();
+            IsPaying = true;
+            // Using this reference to create a non-allocation call
+            await tweenAnimation.OnComplete(target: this, target => target.FinishPlay());
+        }
 
         public override void Play() => tweenAnimation = GetTweenAnimation();
         public override void Stop() => tweenAnimation.Stop();
@@ -28,5 +38,7 @@ namespace PrimeTween
         }
 
         protected abstract Tween GetTweenAnimation();
+
+        private void FinishPlay() => IsPaying = false;
     }
 }
