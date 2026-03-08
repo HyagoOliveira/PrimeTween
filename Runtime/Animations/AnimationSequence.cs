@@ -3,13 +3,13 @@ using UnityEngine;
 namespace PrimeTween
 {
     [DisallowMultipleComponent]
-    public sealed class AnimationSequence : MonoBehaviour
+    public sealed class AnimationSequence : AbstractAnimation
     {
         private AbstractAnimation[] animations;
 
         private void Awake() => animations = GetComponentsInChildren<AbstractAnimation>();
 
-        public void Play()
+        public override void Play()
         {
             foreach (var animation in animations)
             {
@@ -17,7 +17,7 @@ namespace PrimeTween
             }
         }
 
-        public void Stop()
+        public override void Stop()
         {
             foreach (var animation in animations)
             {
