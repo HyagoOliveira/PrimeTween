@@ -28,8 +28,8 @@ namespace PrimeTween {
         public Tween.TweenAwaiter GetAwaiter();
         #pragma warning restore CS0618 // Type or member is obsolete
 
-        TResult OnComplete([NotNull] Action onComplete, bool warnIfTargetDestroyed = true);
-        TResult OnComplete<T>([NotNull] T target, [NotNull] Action<T> onComplete, bool warnIfTargetDestroyed = true) where T : class;
+        TResult OnComplete([NotNull] Action onComplete, bool? warnIfTargetDestroyed = null);
+        TResult OnComplete<T>([NotNull] T target, [NotNull] Action<T> onComplete, bool? warnIfTargetDestroyed = null) where T : class;
         Sequence Group(Tween tween);
         Sequence Chain(Tween tween);
         Sequence Group(Sequence sequence);

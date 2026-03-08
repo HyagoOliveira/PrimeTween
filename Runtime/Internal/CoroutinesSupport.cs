@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace PrimeTween {
@@ -13,17 +12,19 @@ namespace PrimeTween {
         /// </code></example>
         [NotNull]
         public IEnumerator ToYieldInstruction() {
-            if (!isAlive || !tryManipulate()) {
-                // ReSharper disable once NotDisposedResourceIsReturned
-                return Enumerable.Empty<object>().GetEnumerator();
+            if (!isAlive || !TryManipulate()) {
+                return Array.Empty<object>().GetEnumerator();
             }
-            var result = tween.coroutineEnumerator;
-            result.SetTween(this);
-            return result;
+            if (tween.data.isInCoroutine) {
+                Assert.LogErrorWithStackTrace($"{nameof(ToYieldInstruction)} can't be called on a tween that's already being waited for in a coroutine.", tween.id, tween.managedData.target);
+                return Array.Empty<object>().GetEnumerator();
+            }
+            tween.data.isInCoroutine = true;
+            return tween;
         }
 
         bool IEnumerator.MoveNext() {
-            PrimeTweenManager.Instance.warnStructBoxingInCoroutineOnce(id);
+            PrimeTweenManager.Instance.WarnStructBoxingInCoroutineOnce(id, tween);
             return isAlive;
         }
 
@@ -49,7 +50,7 @@ namespace PrimeTween {
         public IEnumerator ToYieldInstruction() => root.ToYieldInstruction();
 
         bool IEnumerator.MoveNext() {
-            PrimeTweenManager.Instance.warnStructBoxingInCoroutineOnce(id);
+            PrimeTweenManager.Instance.WarnStructBoxingInCoroutineOnce(id, root.tween);
             return isAlive;
         }
 
@@ -63,30 +64,18 @@ namespace PrimeTween {
         void IEnumerator.Reset() => throw new NotSupportedException();
     }
 
-    internal class TweenCoroutineEnumerator : IEnumerator {
-        internal Tween tween;
-        bool isRunning;
-
-        internal void SetTween(Tween _tween) {
-            Assert.IsFalse(isRunning); // p2 todo turn to error?
-            Assert.IsTrue(!tween.IsCreated || tween.id == _tween.id);
-            Assert.IsTrue(_tween.isAlive);
-            tween = _tween;
-            isRunning = true;
-        }
-
+    internal partial class ColdData : IEnumerator {
         bool IEnumerator.MoveNext() {
-            var result = tween.isAlive;
+            var result = data.isAlive;
             if (!result) {
-                resetEnumerator();
+                ResetCoroutineEnumerator();
             }
             return result;
         }
 
-        internal bool resetEnumerator() {
-            if (tween.IsCreated) {
-                tween = default;
-                isRunning = false;
+        internal bool ResetCoroutineEnumerator() {
+            if (data.isInCoroutine) {
+                data.isInCoroutine = false;
                 return true;
             }
             return false;
@@ -94,8 +83,8 @@ namespace PrimeTween {
 
         object IEnumerator.Current {
             get {
-                Assert.IsTrue(tween.isAlive); // p1 todo throws if debugger is attached
-				Assert.IsTrue(isRunning);
+                Assert.IsTrue(data.isAlive); // p2 todo throws if debugger is attached
+                Assert.IsTrue(data.isInCoroutine);
                 return null;
             }
         }

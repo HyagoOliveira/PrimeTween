@@ -88,16 +88,6 @@ namespace PrimeTween {
             _updateType = updateType.enumValue;
         }
 
-        #if PRIME_TWEEN_DOTWEEN_ADAPTER
-        internal void SetEasing(Easing easing) {
-            ease = easing.ease == Ease.Default ? PrimeTweenManager.Instance.defaultEase : easing.ease;
-            customEase = easing.curve;
-            parametricEase = easing.parametricEase;
-            parametricEaseStrength = easing.parametricEaseStrength;
-            parametricEasePeriod = easing.parametricEasePeriod;
-        }
-        #endif
-
         public TweenSettings(float duration, Ease ease = Ease.Default, int cycles = 1, CycleMode cycleMode = CycleMode.Restart, float startDelay = 0, float endDelay = 0, bool useUnscaledTime = false, UpdateType updateType = default)
             : this(duration, ease, null, cycles, cycleMode, startDelay, endDelay, useUnscaledTime, updateType) {
         }
@@ -116,27 +106,12 @@ namespace PrimeTween {
             }
         }
 
-        internal void CopyFrom(ref TweenSettings other) { // p1 todo this is error prone, just save the struct instead?
-            duration = other.duration;
-            ease = other.ease;
-            customEase = other.customEase;
-            cycles = other.cycles;
-            cycleMode = other.cycleMode;
-            startDelay = other.startDelay;
-            endDelay = other.endDelay;
-            useUnscaledTime = other.useUnscaledTime;
-            parametricEase = other.parametricEase;
-            parametricEaseStrength = other.parametricEaseStrength;
-            parametricEasePeriod = other.parametricEasePeriod;
-            updateType = other.updateType;
-        }
-
         internal const float minDuration = 0.0001f;
 
         internal void SetValidValues() {
-            validateFiniteDuration(duration);
-            validateFiniteDuration(startDelay);
-            validateFiniteDuration(endDelay);
+            validateFiniteDuration(ref duration);
+            validateFiniteDuration(ref startDelay);
+            validateFiniteDuration(ref endDelay);
             setCyclesTo1If0(ref cycles);
             if (duration != 0f) {
                 #if UNITY_EDITOR && PRIME_TWEEN_SAFETY_CHECKS
@@ -150,9 +125,11 @@ namespace PrimeTween {
             endDelay = Mathf.Max(0f, endDelay);
         }
 
-        internal static void validateFiniteDuration(float f) {
-            Assert.IsFalse(float.IsNaN(f), Constants.durationInvalidError);
-            Assert.IsFalse(float.IsInfinity(f), Constants.durationInvalidError);
+        internal static void validateFiniteDuration(ref float f) {
+            if (float.IsNaN(f) || float.IsInfinity(f)) {
+                Debug.LogError(Constants.durationInvalidError);
+                f = 0f;
+            }
         }
 
         internal static bool ValidateCustomCurve([NotNull] AnimationCurve curve) {
@@ -220,6 +197,9 @@ namespace PrimeTween {
         /// Unlike Update and LateUpdate animations, FixedUpdate animations don't apply the 'startValue' before the first frame is rendered.
         /// They receive their first update in the first FixedUpdate() after creation.
         public static readonly UpdateType FixedUpdate = new UpdateType(_UpdateType.FixedUpdate);
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static readonly UpdateType Manual = new UpdateType(_UpdateType.Manual);
+        #endif
 
         [SerializeField]
         internal _UpdateType enumValue;
@@ -244,13 +224,16 @@ namespace PrimeTween {
         LateUpdate,
         [Tooltip("Updates the animation in 'MonoBehaviour.FixedUpdate()'.\n\n" +
                  "Unlike Update and LateUpdate animations, FixedUpdate animations don't apply the 'startValue' before the first frame is rendered. They receive their first update in the first FixedUpdate() after creation.")]
-        FixedUpdate
+        FixedUpdate,
+        #if PRIME_TWEEN_EXPERIMENTAL
+        Manual
+        #endif
     }
 
     /// <summary>The standard animation easing types. Different easing curves produce a different animation 'feeling'.<br/>
     /// Play around with different ease types to choose one that suites you the best.
     /// You can also provide a custom AnimationCurve as an ease function or parametrize eases with the Easing.Overshoot/Elastic/BounceExact(...) methods.</summary>
-    public enum Ease { Custom = -1, Default = 0, Linear = 1,
+    public enum Ease : sbyte { Custom = -1, Default = 0, Linear = 1,
         InSine, OutSine, InOutSine,
         InQuad, OutQuad, InOutQuad,
         InCubic, OutCubic, InOutCubic,

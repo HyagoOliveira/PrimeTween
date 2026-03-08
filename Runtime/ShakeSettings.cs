@@ -17,7 +17,7 @@ namespace PrimeTween {
     /// </summary>
     [Serializable]
     public struct ShakeSettings {
-        internal const float defaultFrequency = 10;
+        internal const float defaultFrequency = 10f;
 
         [Tooltip("Strength is applied per-axis in local space coordinates.\n\n" +
                  "Shakes: the strongest strength component will be used as the main frequency axis. Shakes on secondary axes happen randomly instead of following the frequency.\n\n" +

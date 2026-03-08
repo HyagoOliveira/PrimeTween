@@ -1130,3 +1130,180 @@ MonoBehaviour:
       propType: 6
       propName: localRotation
       speedParamName: averageAngularSpeed
+  manualTweenTypesSerialized1:
+  - tweenType: Delay
+    propType: 1
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: Callback
+    propType: 1
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: ShakeLocalPosition
+    propType: 4
+    targetType: UnityEngine.Transform
+    tooltipConstant:
+    dependency: 0
+  - tweenType: ShakeLocalRotation
+    propType: 6
+    targetType: UnityEngine.Transform
+    tooltipConstant:
+    dependency: 0
+  - tweenType: ShakeScale
+    propType: 4
+    targetType: UnityEngine.Transform
+    tooltipConstant:
+    dependency: 0
+  - tweenType: ShakeCustom
+    propType: 4
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: ShakeCamera
+    propType: 1
+    targetType: UnityEngine.Camera
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomFloat
+    propType: 1
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomColor
+    propType: 2
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomVector2
+    propType: 3
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomVector3
+    propType: 4
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomVector4
+    propType: 5
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomQuaternion
+    propType: 6
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomRect
+    propType: 7
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: CustomDouble
+    propType: 9
+    targetType:
+    tooltipConstant:
+    dependency: 8
+  - tweenType: MaterialColorProperty
+    propType: 2
+    targetType: UnityEngine.Material
+    tooltipConstant:
+    dependency: 0
+  - tweenType: MaterialProperty
+    propType: 1
+    targetType: UnityEngine.Material
+    tooltipConstant:
+    dependency: 0
+  - tweenType: MaterialAlphaProperty
+    propType: 1
+    targetType: UnityEngine.Material
+    tooltipConstant:
+    dependency: 0
+  - tweenType: MaterialTextureOffset
+    propType: 3
+    targetType: UnityEngine.Material
+    tooltipConstant:
+    dependency: 0
+  - tweenType: MaterialTextureScale
+    propType: 3
+    targetType: UnityEngine.Material
+    tooltipConstant:
+    dependency: 0
+  - tweenType: MaterialPropertyVector4
+    propType: 5
+    targetType: UnityEngine.Material
+    tooltipConstant:
+    dependency: 0
+  - tweenType: EulerAngles
+    propType: 4
+    targetType: UnityEngine.Transform
+    tooltipConstant:
+    dependency: 0
+  - tweenType: LocalEulerAngles
+    propType: 4
+    targetType: UnityEngine.Transform
+    tooltipConstant:
+    dependency: 0
+  - tweenType: GlobalTimeScale
+    propType: 1
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: MainSequence
+    propType: 1
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: NestedSequence
+    propType: 1
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: TweenAwaiter
+    propType: 1
+    targetType:
+    tooltipConstant:
+    dependency: 0
+  - tweenType: TweenAnimationComponent
+    propType: 0
+    targetType: PrimeTween.TweenAnimationComponent
+    tooltipConstant:
+    dependency: 11
+  manualTweenTypesSerialized2:
+  - tweenType: MaterialPropertyBlockColorProperty
+    propType: 2
+    targetType: UnityEngine.Renderer
+    tooltipConstant: materialPropBlockTooltip
+    dependency: 6144
+  - tweenType: MaterialPropertyBlockAlphaProperty
+    propType: 1
+    targetType: UnityEngine.Renderer
+    tooltipConstant: materialPropBlockTooltip
+    dependency: 6144
+  - tweenType: MaterialPropertyBlockProperty
+    propType: 1
+    targetType: UnityEngine.Renderer
+    tooltipConstant: materialPropBlockTooltip
+    dependency: 6144
+  - tweenType: MaterialPropertyBlockPropertyVector4
+    propType: 5
+    targetType: UnityEngine.Renderer
+    tooltipConstant: materialPropBlockTooltip
+    dependency: 6144
+  - tweenType: MaterialPropertyBlockTextureScale
+    propType: 3
+    targetType: UnityEngine.Renderer
+    tooltipConstant: materialPropBlockTooltip
+    dependency: 6144
+  - tweenType: MaterialPropertyBlockTextureOffset
+    propType: 3
+    targetType: UnityEngine.Renderer
+    tooltipConstant: materialPropBlockTooltip
+    dependency: 6144
+  - tweenType: TextMaxVisibleCharactersNormalized
+    propType: 1
+    targetType: TMPro.TMP_Text
+    tooltipConstant:
+    dependency: 1024

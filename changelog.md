@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Rename package into Action Code-Prime Tween
+- Update original packaged into 1.3.8
+
+## [1.3.8] - 2026-02-09
+### Added
+- Added global `PrimeTweenConfig.warnIfTargetDestroyed` setting. https://github.com/KyryloKuzyk/PrimeTween/discussions/4
+- Experimental: added `UpdateType.Manual`. https://github.com/KyryloKuzyk/PrimeTween/discussions/135
+### Changed
+- `ToYieldInstruction()` no longer throws assertion exceptions if `IEnumerator.Current` is accessed after `MoveNext` returned `false`. https://github.com/KyryloKuzyk/PrimeTween/issues/220
+- Tween.Custom overloads that accept TweenSettings are now obsolete. Use TweenSettings<T> overloads instead.
+
+## [1.3.7] - 2025-12-20
+### Fixed
+- Fixed crash in ARMv7 (32 bits) Android builds. https://github.com/KyryloKuzyk/PrimeTween/issues/217
+
+## [1.3.6] - 2025-12-4
+### Added
+- Experimental: added `Sequence.GroupCallback` method. https://github.com/KyryloKuzyk/PrimeTween/discussions/90#discussioncomment-14407106
+### Changed
+- Tween overloads that accept TweenSettings are now obsolete. Use TweenSettings<T> overloads instead.
+- Added UnityEngine.Object context to logging. https://github.com/KyryloKuzyk/PrimeTween/discussions/174
+- Log onComplete and onUpdate exceptions with Debug.LogException to make it clickable in the console. https://github.com/KyryloKuzyk/PrimeTween/issues/210
+- Experimental: renamed ResetBeforeComplete to ResetOnComplete.
+### Fixed
+- Fixed: 'Complete()' doesn't work with negative 'timeScale'.
 
 ## [1.3.5] - 2025-10-15
 ### Changed

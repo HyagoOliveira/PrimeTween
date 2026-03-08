@@ -2,14 +2,12 @@ using JetBrains.Annotations;
 using PrimeTween;
 using UnityEditor;
 using UnityEngine;
-using static UnityEditor.EditorGUI;
-using static UnityEditor.EditorGUIUtility;
 
 [CustomPropertyDrawer(typeof(ShakeSettings))]
 internal class ShakeSettingsPropDrawer : PropertyDrawer {
     public override float GetPropertyHeight([NotNull] SerializedProperty property, GUIContent label) {
         if (!property.isExpanded) {
-            return singleLineHeight;
+            return EditorGUIUtility.singleLineHeight;
         }
         property.NextVisible(true);
         float result = EditorGUI.GetPropertyHeight(property, true); // strength
@@ -34,22 +32,22 @@ internal class ShakeSettingsPropDrawer : PropertyDrawer {
         count++; // endDelay
         count++; // useUnscaledTime
         count++; // useFixedUpdate
-        result += singleLineHeight * count + standardVerticalSpacing * (count - 1);
-        result += standardVerticalSpacing * 2; // extra space
+        result += EditorGUIUtility.singleLineHeight * count + EditorGUIUtility.standardVerticalSpacing * (count - 1);
+        result += EditorGUIUtility.standardVerticalSpacing * 2; // extra space
         return result;
     }
 
     public override void OnGUI(Rect position, [NotNull] SerializedProperty property, GUIContent label) {
-        var rect = new Rect(position) { height = singleLineHeight };
-        PropertyField(rect, property, label);
+        var rect = new Rect(position) { height = EditorGUIUtility.singleLineHeight };
+        EditorGUI.PropertyField(rect, property, label);
         if (!property.isExpanded) {
             return;
         }
         moveToNextLine();
-        indentLevel++;
+        EditorGUI.indentLevel++;
         property.NextVisible(true);
         { // strength
-            PropertyField(rect, property);
+            EditorGUI.PropertyField(rect, property);
             rect.y += EditorGUI.GetPropertyHeight(property, true);
         }
         { // duration
@@ -59,13 +57,8 @@ internal class ShakeSettingsPropDrawer : PropertyDrawer {
         }
         { // frequency
             property.NextVisible(false);
-            var floatValue = property.floatValue;
-            if (floatValue == 0f) {
-                property.floatValue = ShakeSettings.defaultFrequency;
-            } else if (floatValue < 0.1f) {
-                property.floatValue = 0.1f;
-            }
             propertyField();
+            ClampFrequency(property);
         }
         { // enableFalloff
             property.NextVisible(false);
@@ -87,32 +80,39 @@ internal class ShakeSettingsPropDrawer : PropertyDrawer {
             }
         }
         // extra space
-        rect.y += standardVerticalSpacing * 2;
+        rect.y += EditorGUIUtility.standardVerticalSpacing * 2;
         { // asymmetry
             property.NextVisible(false);
             propertyField();
         }
         { // easeBetweenShakes
             property.NextVisible(false);
-            if (property.intValue == (int)Ease.Custom) {
-                Debug.LogWarning($"Ease.Custom is not supported for {nameof(ShakeSettings.easeBetweenShakes)}.");
-                property.intValue = (int)Ease.Default;
-            }
             propertyField();
+            if (property.intValue == (int)Ease.Custom && property.SetIntChecked((int)Ease.Default)) {
+                Debug.LogWarning($"Ease.Custom is not supported for {nameof(ShakeSettings.easeBetweenShakes)}.");
+            }
         }
+
+        // cycles
         property.NextVisible(false);
-        TweenSettingsPropDrawer.DrawCycles(rect, property);
-        moveToNextLine();
+        propertyField();
+        TweenSettingsPropDrawer.ClampCycles(property);
+
+        // startDelay
         TweenSettingsPropDrawer.drawStartDelayTillEnd(ref rect, property);
-        indentLevel--;
+        EditorGUI.indentLevel--;
 
         void propertyField() {
-            PropertyField(rect, property);
+            EditorGUI.PropertyField(rect, property);
             moveToNextLine();
         }
 
         void moveToNextLine() {
-            rect.y += singleLineHeight + standardVerticalSpacing;
+            rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
         }
+    }
+
+    internal static void ClampFrequency(SerializedProperty prop) {
+        TweenSettingsPropDrawer.ClampProperty(prop, ShakeSettings.defaultFrequency, 0.15f);
     }
 }

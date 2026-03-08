@@ -1,20 +1,19 @@
 // ReSharper disable AnnotateNotNullParameter
 using UnityEngine;
-using TypeUnion = PrimeTween.TweenAnimation.TypeUnion;
 
 namespace PrimeTween {
     internal static class Extensions {
         internal static float CalcDistance(Vector3 v1, Vector3 v2) => Vector3.Distance(v1, v2);
         internal static float CalcDistance(Quaternion q1, Quaternion q2) => Quaternion.Angle(q1, q2);
 
-        internal static float calcDelta(this float val, TypeUnion prevVal) => val - prevVal.single;
-        internal static double calcDelta(this double val, TypeUnion prevVal) => val - prevVal.DoubleVal;
-        internal static Color calcDelta(this Color val, TypeUnion prevVal) => val - prevVal.color;
-        internal static Vector2 calcDelta(this Vector2 val, TypeUnion prevVal) => val - prevVal.vector2;
-        internal static Vector3 calcDelta(this Vector3 val, TypeUnion prevVal) => val - prevVal.vector3;
-        internal static Vector4 calcDelta(this Vector4 val, TypeUnion prevVal) => val - prevVal.vector4;
-        internal static Quaternion calcDelta(this Quaternion val, TypeUnion prevVal) => Quaternion.Inverse(prevVal.quaternion) * val;
-        internal static Rect calcDelta(this Rect val, TypeUnion prevVal) => new Rect(
+        internal static float calcDelta(this float val, TweenAnimation.ValueWrapper prevVal) => val - prevVal.single;
+        internal static double calcDelta(this double val, TweenAnimation.ValueWrapper prevVal) => val - prevVal.DoubleVal;
+        internal static Color calcDelta(this Color val, TweenAnimation.ValueWrapper prevVal) => val - prevVal.color;
+        internal static Vector2 calcDelta(this Vector2 val, TweenAnimation.ValueWrapper prevVal) => val - prevVal.vector2;
+        internal static Vector3 calcDelta(this Vector3 val, TweenAnimation.ValueWrapper prevVal) => val - prevVal.vector3;
+        internal static Vector4 calcDelta(this Vector4 val, TweenAnimation.ValueWrapper prevVal) => val - prevVal.vector4;
+        internal static Quaternion calcDelta(this Quaternion val, TweenAnimation.ValueWrapper prevVal) => Quaternion.Inverse(prevVal.quaternion) * val;
+        internal static Rect calcDelta(this Rect val, TweenAnimation.ValueWrapper prevVal) => new Rect(
             val.x - prevVal.x,
             val.y - prevVal.y,
             val.width - prevVal.z,
@@ -25,14 +24,16 @@ namespace PrimeTween {
             return c;
         }
 
-        internal static TypeUnion ToContainer(this float f) => new TypeUnion { single = f };
-        internal static TypeUnion ToContainer(this Vector2 v) => new TypeUnion { vector2 = v };
-        internal static TypeUnion ToContainer(this Vector3 v) => new TypeUnion { vector3 = v };
-        internal static TypeUnion ToContainer(this Vector4 v) => new TypeUnion { vector4 = v };
-        internal static TypeUnion ToContainer(this Color c) => new TypeUnion { color = c };
-        internal static TypeUnion ToContainer(this Quaternion q) => new TypeUnion { quaternion = q };
-        internal static TypeUnion ToContainer(this Rect r) => new TypeUnion { rect = r };
-        internal static TypeUnion ToContainer(this double d) => new TypeUnion { DoubleVal = d };
+        internal static TweenAnimation.ValueWrapper ToContainer(this float f) => new TweenAnimation.ValueWrapper { single = f };
+        internal static TweenAnimation.ValueWrapper ToContainer(this Vector2 v) => new TweenAnimation.ValueWrapper { vector2 = v };
+        internal static TweenAnimation.ValueWrapper ToContainer(this Vector3 v) => new TweenAnimation.ValueWrapper { vector3 = v };
+        internal static TweenAnimation.ValueWrapper ToContainer(this Vector4 v) => new TweenAnimation.ValueWrapper { vector4 = v };
+        internal static TweenAnimation.ValueWrapper XYToContainer(this Vector4 v) => new TweenAnimation.ValueWrapper { vector2 = new Vector2(v.x, v.y) };
+        internal static TweenAnimation.ValueWrapper ZWToContainer(this Vector4 v) => new TweenAnimation.ValueWrapper { vector2 = new Vector2(v.z, v.w) };
+        internal static TweenAnimation.ValueWrapper ToContainer(this Color c) => new TweenAnimation.ValueWrapper { color = c };
+        internal static TweenAnimation.ValueWrapper ToContainer(this Quaternion q) => new TweenAnimation.ValueWrapper { quaternion = q };
+        internal static TweenAnimation.ValueWrapper ToContainer(this Rect r) => new TweenAnimation.ValueWrapper { rect = r };
+        internal static TweenAnimation.ValueWrapper ToContainer(this double d) => new TweenAnimation.ValueWrapper { DoubleVal = d };
 
         internal static Vector2 WithComponent(this Vector2 v, int index, float val) {
             v[index] = val;
@@ -95,6 +96,43 @@ namespace PrimeTween {
             style.top = c.y;
             style.width = c.width;
             style.height = c.height;
+        }
+        #endif
+
+        #if UNITY_2021_1_OR_NEWER
+        static bool TryGetPropertyBlock(object target, out MaterialPropertyBlock result) {
+            var renderer = target as Renderer;
+            if (renderer.HasPropertyBlock()) {
+                result = PrimeTweenManager.Instance.materialPropertyBlockForGetter;
+                renderer.GetPropertyBlock(result);
+                return true;
+            }
+            result = null;
+            return false;
+        }
+        internal static bool TryGetPropertyBlockColor(object target, int propId, out Color result) {
+            if (TryGetPropertyBlock(target, out var b) && b.HasColor(propId)) {
+                result = b.GetColor(propId);
+                return true;
+            }
+            result = default;
+            return false;
+        }
+        internal static bool TryGetPropertyBlockVector(object target, int propId, out Vector4 result) {
+            if (TryGetPropertyBlock(target, out var b) && b.HasVector(propId)) {
+                result = b.GetVector(propId);
+                return true;
+            }
+            result = default;
+            return false;
+        }
+        internal static bool TryGetPropertyBlockFloat(object target, int propId, out float result) {
+            if (TryGetPropertyBlock(target, out var b) && b.HasFloat(propId)) {
+                result = b.GetFloat(propId);
+                return true;
+            }
+            result = default;
+            return false;
         }
         #endif
     }

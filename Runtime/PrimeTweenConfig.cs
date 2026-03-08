@@ -24,7 +24,7 @@ namespace PrimeTween {
         /// </example>
         public static void SetTweensCapacity(int capacity) {
             Assert.IsTrue(capacity >= 0);
-            if (PrimeTweenManager.HasInstance) {
+            if (PrimeTweenManager.HasInstance && !PrimeTweenManager.Instance.isDestroyed) {
                 PrimeTweenManager.Instance.SetTweensCapacity(capacity);
             } else {
                 PrimeTweenManager.customInitialCapacity = capacity;
@@ -54,6 +54,7 @@ namespace PrimeTween {
         }
         
         public static bool warnTweenOnDisabledTarget {
+            internal get => Instance.warnTweenOnDisabledTarget;
             set => Instance.warnTweenOnDisabledTarget = value;
         }
         
@@ -80,21 +81,30 @@ namespace PrimeTween {
             set => Instance.warnEndValueEqualsCurrent = value;
         }
 
-        #if PRIME_TWEEN_EXPERIMENTAL
-        public
-        #endif
-        static void ManualUpdate(UpdateType updateType, float? deltaTime = null, float? unscaledDeltaTime = null) {
-            Instance.enabled = false;
-            Instance.UpdateTweens(updateType.enumValue, deltaTime, unscaledDeltaTime);
+        /// <summary>Sets the global default value for the 'warnIfTargetDestroyed' parameter.<br/>
+        /// NOTE: it's not recommended to disable warnings. Instead, consider 'warnIfTargetDestroyed: false' on a case-by-case basis on non-business critical animations.<br/>
+        /// See more: https://github.com/KyryloKuzyk/PrimeTween/discussions/4#discussioncomment-15189187</summary>
+        public static bool warnIfTargetDestroyed {
+            set => Instance.warnIfTargetDestroyed = value;
         }
 
         #if PRIME_TWEEN_EXPERIMENTAL
-        public
+        public static void ManualUpdate(UpdateType updateType, float? deltaTime = null, float? unscaledDeltaTime = null) {
+            if (updateType != UpdateType.Manual) {
+                Instance.enabled = false;
+            }
+            Instance.UpdateTweens(updateType.enumValue, deltaTime, unscaledDeltaTime);
+        }
         #endif
-        static void ManualUpdateApplyStartValues(UpdateType updateType) {
-            Instance.enabled = false;
+
+        #if PRIME_TWEEN_EXPERIMENTAL
+        public static void ManualUpdateApplyStartValues(UpdateType updateType) {
+            if (updateType != UpdateType.Manual) {
+                Instance.enabled = false;
+            }
             Instance.ApplyStartValues(updateType.enumValue);
         }
+        #endif
 
         #if PRIME_TWEEN_EXPERIMENTAL
         public

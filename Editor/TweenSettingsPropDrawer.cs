@@ -33,7 +33,7 @@ internal class TweenSettingsPropDrawer : PropertyDrawer {
         count++; // useUnscaledTime
         count++; // useFixedUpdate
         var result = EditorGUIUtility.singleLineHeight * count + EditorGUIUtility.standardVerticalSpacing * (count - 1);
-        result += EditorGUIUtility.standardVerticalSpacing * 2; // extra spacing
+        result += EditorGUIUtility.standardVerticalSpacing * 4; // extra spacing
         return result;
     }
 
@@ -54,23 +54,23 @@ internal class TweenSettingsPropDrawer : PropertyDrawer {
         EditorGUI.indentLevel--;
     }
 
-    internal static void DrawDuration(Rect rect, [NotNull] SerializedProperty property) { // p0 todo allow duration to be 0f in Inspector? need to change how defaultValue behaves below
-        if (GUI.enabled) {
-            ClampProperty(property, 1f);
-        }
+    internal static void DrawDuration(Rect rect, [NotNull] SerializedProperty property) { // p2 todo allow duration to be 0f in Inspector? need to change how defaultValue behaves below
         EditorGUI.PropertyField(rect, property);
+        ClampProperty(property, 1f);
     }
 
     internal static void ClampProperty(SerializedProperty prop, float defaultValue, float min = 0.01f, float max = float.MaxValue) {
-        prop.floatValue = prop.floatValue == 0f ? defaultValue : Mathf.Clamp(prop.floatValue, min, max);
+        float current = prop.floatValue;
+        float clamped = current == 0f ? defaultValue : Mathf.Clamp(current, min, max);
+        prop.SetFloatChecked(clamped);
     }
 
     internal static void drawEaseTillEnd([NotNull] SerializedProperty property, ref Rect rect) {
-        DrawEaseAndCycles(property, ref rect);
+        DrawEaseAndCycles(out _, property, ref rect);
         drawStartDelayTillEnd(ref rect, property);
     }
 
-    internal static void DrawEaseAndCycles(SerializedProperty property, ref Rect rect, bool addSpace = true, bool draw = true, bool allowInfiniteCycles = true) {
+    internal static void DrawEaseAndCycles(out int cycles, SerializedProperty property, ref Rect rect, bool addSpace = true, bool draw = true, bool allowInfiniteCycles = true) {
         { // ease
             property.NextVisible(true);
             if (draw)
@@ -84,25 +84,29 @@ internal class TweenSettingsPropDrawer : PropertyDrawer {
                     EditorGUI.PropertyField(rect, property);
                 moveToNextLine(ref rect);
             } else {
-                property.animationCurveValue = new AnimationCurve();
+                if (!property.hasMultipleDifferentValues) {
+                    property.animationCurveValue = new AnimationCurve();
+                }
             }
         }
         if (addSpace) {
-            rect.y += EditorGUIUtility.standardVerticalSpacing * 2;
+            rect.y += EditorGUIUtility.standardVerticalSpacing * 4;
         }
         { // cycles
-            property.NextVisible(false);
-            Assert.AreEqual(nameof(TweenSettings.cycles), property.name);
-            var cycles = DrawCycles(rect, property, draw, allowInfiniteCycles);
+            property.NextVisible(nameof(TweenSettings.cycles));
+            if (draw) {
+                EditorGUI.PropertyField(rect, property);
+                ClampCycles(property, allowInfiniteCycles);
+            }
             moveToNextLine(ref rect);
-            {
-                // cycleMode
-                property.NextVisible(true);
-                if (cycles != 0 && cycles != 1) {
-                    if (draw)
-                        EditorGUI.PropertyField(rect, property);
-                    moveToNextLine(ref rect);
-                }
+            cycles = property.intValue;
+
+            // cycleMode
+            property.NextVisible(true);
+            if (cycles != 0 && cycles != 1) {
+                if (draw)
+                    EditorGUI.PropertyField(rect, property);
+                moveToNextLine(ref rect);
             }
         }
     }
@@ -111,10 +115,10 @@ internal class TweenSettingsPropDrawer : PropertyDrawer {
         { // startDelay, endDelay
             for (int _ = 0; _ < 2; _++) {
                 property.NextVisible(true);
-                if (property.floatValue < 0f) {
-                    property.floatValue = 0f;
-                }
                 EditorGUI.PropertyField(rect, property);
+                if (property.floatValue < 0f) {
+                    property.SetFloatChecked(0f);
+                }
                 moveToNextLine(ref rect);
             }
         }
@@ -126,49 +130,43 @@ internal class TweenSettingsPropDrawer : PropertyDrawer {
         { // useFixedUpdate
             property.Next(false);
             bool useFixedUpdateObsolete = property.boolValue;
-            var useFixedUpdateProp = property.Copy();
+            var useFixedUpdateObsoleteProp = property.Copy();
 
             // _updateType
             property.NextVisible(false);
             var current = (_UpdateType)property.enumValueIndex;
-            if (useFixedUpdateObsolete && current != _UpdateType.FixedUpdate) {
+            if (useFixedUpdateObsolete && current != _UpdateType.FixedUpdate && !property.serializedObject.isEditingMultipleObjects) {
                 property.serializedObject.Update();
+                useFixedUpdateObsoleteProp.boolValue = false;
                 property.enumValueIndex = (int)_UpdateType.FixedUpdate;
                 property.serializedObject.ApplyModifiedProperties();
             } else {
                 if (updateTypeGuiContent == null) {
                     updateTypeGuiContent = new GUIContent(property.displayName, property.tooltip);
                 }
-                GUIContent guiContent = EditorGUI.BeginProperty(rect, updateTypeGuiContent, property);
-                EditorGUI.BeginChangeCheck();
-                var newUpdateType = (_UpdateType)EditorGUI.EnumPopup(rect, guiContent, current);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    property.enumValueIndex = (int)newUpdateType;
-                    useFixedUpdateProp.boolValue = newUpdateType == _UpdateType.FixedUpdate;
+                using (var scope = new CustomPropertyScope(rect, updateTypeGuiContent, property)) {
+                    var newUpdateType = (_UpdateType)EditorGUI.EnumPopup(rect, scope.content, current);
+                    if (scope.EndChangeCheck()) {
+                        property.enumValueIndex = (int)newUpdateType;
+
+                        // Updating _useFixedUpdate breaks the Prefab "Revert" button, so I commented it out.
+                        // Updating the _useFixedUpdate was necessary before so users can safely downgrade from 1.3.0 to a previous version.
+                        // But 1.3.0 was released 8 months ago, so we no longer need to support downgrading to such an old version.
+                        // useFixedUpdateProp.boolValue = newUpdateType == _UpdateType.FixedUpdate;
+                    }
                 }
                 moveToNextLine(ref rect);
-                EditorGUI.EndProperty();
             }
         }
     }
 
-    internal static int ClampCycles(SerializedProperty property, bool allowInfiniteCycles = true) {
+    internal static void ClampCycles(SerializedProperty property, bool allowInfiniteCycles = true) {
         int val = property.intValue;
         if (val == 0) {
-            val = 1;
+            property.SetIntChecked(1);
         } else if (val < 0) {
-            val = allowInfiniteCycles ? -1 : 1;
+            property.SetIntChecked(allowInfiniteCycles ? -1 : 1);
         }
-        property.intValue = val;
-        return val;
-    }
-
-    internal static int DrawCycles(Rect rect, [NotNull] SerializedProperty property, bool draw = true, bool allowInfiniteCycles = true) {
-        int val = ClampCycles(property, allowInfiniteCycles);
-        if (draw)
-            EditorGUI.PropertyField(rect, property);
-        return val;
     }
 
     static void moveToNextLine(ref Rect rect) {
