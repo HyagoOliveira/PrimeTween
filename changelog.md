@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - AlphaAnimation component
 - Async AbstractAnimation.PlayAsync function
+- TweenMoveAnimation  component
 
 ### Changed
 - Rename package into Action Code-Prime Tween
