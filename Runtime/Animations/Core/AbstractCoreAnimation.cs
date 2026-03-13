@@ -8,8 +8,17 @@ namespace PrimeTween
 
         private void Update() => UpdateAnimation(GetDeltaTime());
 
-        public override void Play() => enabled = true;
-        public override void Stop() => enabled = false;
+        public override void Play()
+        {
+            base.Play();
+            enabled = true;
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
+            enabled = false;
+        }
 
         public override async Awaitable PlayAsync()
         {

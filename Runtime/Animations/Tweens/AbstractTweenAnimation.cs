@@ -11,8 +11,6 @@ namespace PrimeTween
         [Tooltip("The Tween animation properties."), ContextMenuItem("Create Loop", nameof(SetLoop))]
         public TweenSettings<T> settings;
 
-        public bool IsPaying { get; private set; }
-
         protected Tween tweenAnimation = default;
 
         private void OnEnable() => Play();
@@ -34,8 +32,17 @@ namespace PrimeTween
             enabled = wasEnabled;
         }
 
-        public override void Play() => tweenAnimation = GetTweenAnimation();
-        public override void Stop() => tweenAnimation.Stop();
+        public override void Play()
+        {
+            base.Play();
+            tweenAnimation = GetTweenAnimation();
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
+            tweenAnimation.Stop();
+        }
 
         public void SetLoop(CycleMode loop = CycleMode.Yoyo)
         {

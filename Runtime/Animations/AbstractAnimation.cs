@@ -6,8 +6,10 @@ namespace PrimeTween
     {
         public string identifier = string.Empty;
 
+        public bool IsPaying { get; protected set; }
+
         public abstract Awaitable PlayAsync();
-        public abstract void Play();
-        public abstract void Stop();
+        public virtual void Play() => IsPaying = true;
+        public virtual void Stop() => IsPaying = false;
     }
 }
