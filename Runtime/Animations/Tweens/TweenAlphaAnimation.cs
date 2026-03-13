@@ -22,6 +22,10 @@ namespace PrimeTween
         {
             canvasGroup = GetComponentInChildren<CanvasGroup>();
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+#if UNITY_UGUI_INSTALLED
+            graphic = GetComponent<UnityEngine.UI.Graphic>();
+            shadow = GetComponent<UnityEngine.UI.Shadow>();
+#endif
         }
 
         protected override Tween GetTweenAnimation()
