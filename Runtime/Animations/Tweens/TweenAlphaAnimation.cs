@@ -5,7 +5,6 @@ namespace PrimeTween
     /// <summary>
     /// Tween Alpha animation.
     /// </summary>
-    [DisallowMultipleComponent]
     public sealed class TweenAlphaAnimation : AbstractTweenAnimation<float>
     {
         [Space]

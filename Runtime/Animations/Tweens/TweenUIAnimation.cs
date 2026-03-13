@@ -5,7 +5,6 @@ namespace PrimeTween
     /// <summary>
     /// Tween animations for UI.
     /// </summary>
-    [DisallowMultipleComponent]
     public sealed class TweenUIAnimation : AbstractTweenAnimation<Vector2>
     {
         public AnchoredAnimationType type;

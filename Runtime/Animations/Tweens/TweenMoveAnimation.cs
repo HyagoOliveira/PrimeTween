@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace PrimeTween
 {
-    [DisallowMultipleComponent]
     public sealed class TweenMoveAnimation : AbstractTweenAnimation<Vector3>
     {
         private void Reset()

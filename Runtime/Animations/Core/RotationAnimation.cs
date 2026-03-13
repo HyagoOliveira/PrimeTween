@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace PrimeTween
 {
-    [DisallowMultipleComponent]
     public sealed class RotationAnimation : AbstractCoreAnimation
     {
         public Space relation = Space.Self;

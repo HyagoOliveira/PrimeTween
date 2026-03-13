@@ -6,7 +6,6 @@ namespace PrimeTween
     /// <summary>
     /// Tween animation for writing Text.
     /// </summary>
-    [DisallowMultipleComponent]
     public sealed class TweenTextAnimation : AbstractTweenAnimation<int>
     {
 #if TEXT_MESH_PRO_INSTALLED
